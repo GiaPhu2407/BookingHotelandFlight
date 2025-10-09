@@ -1,0 +1,702 @@
+// Prisma Schema - Hệ thống đặt vé máy bay và khách sạn tích hợp
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// ============================================
+// QUẢN LÝ NGƯỜI DÙNG & KHÁCH HÀNG
+// ============================================
+
+model Customer {
+  id              String    @id @default(uuid())
+  email           String    @unique
+  password        String
+  firstName       String
+  lastName        String
+  phoneNumber     String?
+  dateOfBirth     DateTime?
+  nationality     String?
+  passportNumber  String?
+  address         String?   @db.Text
+  city            String?
+  country         String?
+  loyaltyPoints   Int       @default(0)
+  isVerified      Boolean   @default(false)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  hotelBookings   HotelBooking[]
+  flightBookings  FlightBooking[]
+  comboBookings   ComboBooking[]
+  reviews         Review[]
+  payments        Payment[]
+
+  @@index([email])
+  @@map("customers")
+}
+
+model Employee {
+  id              String         @id @default(uuid())
+  email           String         @unique
+  password        String
+  firstName       String
+  lastName        String
+  phoneNumber     String?
+  role            EmployeeRole
+  department      String?
+  hireDate        DateTime       @default(now())
+  salary          Decimal?       @db.Decimal(10, 2)
+  isActive        Boolean        @default(true)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  permissions     Permission[]
+  maintenanceRecords MaintenanceRecord[]
+  auditLogs       AuditLog[]
+
+  @@index([email, role])
+  @@map("employees")
+}
+
+enum EmployeeRole {
+  ADMIN
+  MANAGER
+  RECEPTIONIST
+  HOUSEKEEPING
+  MAINTENANCE
+  CUSTOMER_SERVICE
+  FLIGHT_COORDINATOR
+}
+
+model Permission {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+
+  employeeId  String
+  employee    Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@index([employeeId])
+  @@map("permissions")
+}
+
+// ============================================
+// QUẢN LÝ KHÁCH SẠN
+// ============================================
+
+model RoomType {
+  id              String    @id @default(uuid())
+  name            String
+  description     String?   @db.Text
+  basePrice       Decimal   @db.Decimal(10, 2)
+  maxOccupancy    Int
+  bedType         String
+  size            Decimal?  @db.Decimal(5, 2)
+  viewType        String?
+  imageUrls       String?   @db.Text
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  rooms           Room[]
+  amenities       RoomAmenity[]
+  seasonalRates   SeasonalRate[]
+
+  @@map("room_types")
+}
+
+model Room {
+  id              String      @id @default(uuid())
+  roomNumber      String      @unique
+  floor           Int
+  status          RoomStatus  @default(AVAILABLE)
+  lastCleaned     DateTime?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  roomTypeId      String
+  roomType        RoomType    @relation(fields: [roomTypeId], references: [id], onDelete: Cascade)
+
+  bookingItems    HotelBookingItem[]
+  maintenanceRecords MaintenanceRecord[]
+
+  @@index([status, roomTypeId])
+  @@index([roomTypeId])
+  @@map("rooms")
+}
+
+enum RoomStatus {
+  AVAILABLE
+  OCCUPIED
+  MAINTENANCE
+  CLEANING
+  RESERVED
+}
+
+model RoomAmenity {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  iconUrl     String?
+  createdAt   DateTime @default(now())
+
+  roomTypeId  String
+  roomType    RoomType @relation(fields: [roomTypeId], references: [id], onDelete: Cascade)
+
+  @@index([roomTypeId])
+  @@map("room_amenities")
+}
+
+model SeasonalRate {
+  id              String   @id @default(uuid())
+  startDate       DateTime
+  endDate         DateTime
+  priceMultiplier Decimal  @db.Decimal(5, 2)
+  description     String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  roomTypeId      String
+  roomType        RoomType @relation(fields: [roomTypeId], references: [id], onDelete: Cascade)
+
+  @@index([roomTypeId])
+  @@index([startDate, endDate])
+  @@map("seasonal_rates")
+}
+
+model MaintenanceRecord {
+  id              String            @id @default(uuid())
+  issueDescription String           @db.Text
+  status          MaintenanceStatus @default(PENDING)
+  priority        String?
+  scheduledDate   DateTime?
+  completedDate   DateTime?
+  cost            Decimal?          @db.Decimal(10, 2)
+  notes           String?           @db.Text
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  roomId          String
+  assignedToId    String?
+
+  room            Room              @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  assignedTo      Employee?         @relation(fields: [assignedToId], references: [id], onDelete: SetNull)
+
+  @@index([status, scheduledDate])
+  @@index([roomId])
+  @@index([assignedToId])
+  @@map("maintenance_records")
+}
+
+enum MaintenanceStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+// ============================================
+// QUẢN LÝ ĐẶT PHÒNG KHÁCH SẠN
+// ============================================
+
+model HotelBooking {
+  id              String              @id @default(uuid())
+  bookingReference String             @unique
+  checkInDate     DateTime
+  checkOutDate    DateTime
+  numberOfGuests  Int
+  specialRequests String?             @db.Text
+  totalAmount     Decimal             @db.Decimal(10, 2)
+  status          HotelBookingStatus  @default(PENDING)
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+
+  customerId      String
+  customer        Customer            @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  bookingItems    HotelBookingItem[]
+  comboBookings   ComboBooking[]
+
+  @@index([customerId, checkInDate])
+  @@index([status, checkInDate])
+  @@index([customerId])
+  @@map("hotel_bookings")
+}
+
+enum HotelBookingStatus {
+  PENDING
+  CONFIRMED
+  CHECKED_IN
+  CHECKED_OUT
+  CANCELLED
+  NO_SHOW
+}
+
+model HotelBookingItem {
+  id              String   @id @default(uuid())
+  pricePerNight   Decimal  @db.Decimal(10, 2)
+  numberOfNights  Int
+  subtotal        Decimal  @db.Decimal(10, 2)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  hotelBookingId  String
+  roomId          String
+
+  hotelBooking    HotelBooking @relation(fields: [hotelBookingId], references: [id], onDelete: Cascade)
+  room            Room         @relation(fields: [roomId], references: [id], onDelete: Restrict)
+
+  @@index([hotelBookingId])
+  @@index([roomId])
+  @@map("hotel_booking_items")
+}
+
+// ============================================
+// QUẢN LÝ CHUYẾN BAY
+// ============================================
+
+model Airport {
+  id          String   @id @default(uuid())
+  code        String   @unique
+  name        String
+  city        String
+  country     String
+  timezone    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  departureFlights Flight[] @relation("DepartureAirport")
+  arrivalFlights   Flight[] @relation("ArrivalAirport")
+
+  @@index([city, country])
+  @@index([code])
+  @@map("airports")
+}
+
+model Airline {
+  id        String   @id @default(uuid())
+  code      String   @unique
+  name      String
+  logoUrl   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  flights   Flight[]
+
+  @@index([code])
+  @@map("airlines")
+}
+
+model Flight {
+  id                String        @id @default(uuid())
+  flightNumber      String
+  departureTime     DateTime
+  arrivalTime       DateTime
+  duration          Int
+  status            FlightStatus  @default(SCHEDULED)
+  aircraftType      String?
+  availableSeats    Int
+  basePrice         Decimal       @db.Decimal(10, 2)
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  airlineId         String
+  departureAirportId String
+  arrivalAirportId   String
+
+  airline           Airline       @relation(fields: [airlineId], references: [id], onDelete: Restrict)
+  departureAirport  Airport       @relation("DepartureAirport", fields: [departureAirportId], references: [id], onDelete: Restrict)
+  arrivalAirport    Airport       @relation("ArrivalAirport", fields: [arrivalAirportId], references: [id], onDelete: Restrict)
+
+  flightBookings    FlightBooking[]
+  seatClasses       SeatClass[]
+  dailyPricing      FlightDailyPrice[]
+
+  @@index([flightNumber, departureTime])
+  @@index([departureAirportId, arrivalAirportId, departureTime])
+  @@index([status, departureTime])
+  @@index([airlineId])
+  @@index([departureAirportId])
+  @@index([arrivalAirportId])
+  @@map("flights")
+}
+
+enum FlightStatus {
+  SCHEDULED
+  DELAYED
+  BOARDING
+  DEPARTED
+  ARRIVED
+  CANCELLED
+}
+
+model SeatClass {
+  id              String   @id @default(uuid())
+  className       SeatClassName
+  availableSeats  Int
+  priceMultiplier Decimal  @db.Decimal(5, 2)
+  baggage         String?
+  benefits        String?  @db.Text
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  flightId        String
+  flight          Flight   @relation(fields: [flightId], references: [id], onDelete: Cascade)
+
+  passengers      Passenger[]
+
+  @@index([flightId])
+  @@index([flightId, className])
+  @@map("seat_classes")
+}
+
+enum SeatClassName {
+  ECONOMY
+  PREMIUM_ECONOMY
+  BUSINESS
+  FIRST_CLASS
+}
+
+// ============================================
+// QUẢN LÝ ĐẶT VÉ MÁY BAY
+// ============================================
+
+model FlightBooking {
+  id              String              @id @default(uuid())
+  bookingReference String             @unique
+  bookingDate     DateTime            @default(now())
+  totalAmount     Decimal             @db.Decimal(10, 2)
+  status          FlightBookingStatus @default(PENDING)
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+
+  customerId      String
+  flightId        String
+
+  customer        Customer            @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  flight          Flight              @relation(fields: [flightId], references: [id], onDelete: Restrict)
+
+  passengers      Passenger[]
+  comboBookings   ComboBooking[]
+
+  @@index([customerId, bookingDate])
+  @@index([status, bookingDate])
+  @@index([customerId])
+  @@index([flightId])
+  @@map("flight_bookings")
+}
+
+enum FlightBookingStatus {
+  PENDING
+  CONFIRMED
+  CHECKED_IN
+  COMPLETED
+  CANCELLED
+  REFUNDED
+}
+
+model Passenger {
+  id              String    @id @default(uuid())
+  firstName       String
+  lastName        String
+  dateOfBirth     DateTime
+  passportNumber  String?
+  nationality     String
+  seatNumber      String?
+  specialRequests String?   @db.Text
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  flightBookingId String
+  seatClassId     String
+
+  flightBooking   FlightBooking @relation(fields: [flightBookingId], references: [id], onDelete: Cascade)
+  seatClass       SeatClass     @relation(fields: [seatClassId], references: [id], onDelete: Restrict)
+
+  @@index([flightBookingId])
+  @@index([seatClassId])
+  @@map("passengers")
+}
+
+// ============================================
+// ĐẶT COMBO (VÉ MÁY BAY + KHÁCH SẠN)
+// ============================================
+
+model ComboBooking {
+  id                String             @id @default(uuid())
+  bookingReference  String             @unique
+  totalAmount       Decimal            @db.Decimal(10, 2)
+  discountAmount    Decimal            @default(0) @db.Decimal(10, 2)
+  finalAmount       Decimal            @db.Decimal(10, 2)
+  status            ComboBookingStatus @default(PENDING)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+
+  customerId        String
+  flightBookingId   String?            @unique
+  hotelBookingId    String?            @unique
+
+  customer          Customer           @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  flightBooking     FlightBooking?     @relation(fields: [flightBookingId], references: [id], onDelete: SetNull)
+  hotelBooking      HotelBooking?      @relation(fields: [hotelBookingId], references: [id], onDelete: SetNull)
+
+  payments          Payment[]
+
+  @@index([customerId, createdAt])
+  @@index([customerId])
+  @@index([flightBookingId])
+  @@index([hotelBookingId])
+  @@map("combo_bookings")
+}
+
+enum ComboBookingStatus {
+  PENDING
+  CONFIRMED
+  PARTIALLY_COMPLETED
+  COMPLETED
+  CANCELLED
+}
+
+// ============================================
+// THANH TOÁN
+// ============================================
+
+model Payment {
+  id              String        @id @default(uuid())
+  paymentDate     DateTime      @default(now())
+  paymentMethod   PaymentMethod
+  transactionId   String?       @unique
+  amount          Decimal       @db.Decimal(10, 2)
+  currency        String        @default("VND")
+  status          PaymentStatus @default(PENDING)
+  notes           String?       @db.Text
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  customerId      String
+  comboBookingId  String?
+
+  customer        Customer      @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  comboBooking    ComboBooking? @relation(fields: [comboBookingId], references: [id], onDelete: SetNull)
+
+  @@index([customerId, paymentDate])
+  @@index([status, paymentDate])
+  @@index([customerId])
+  @@index([comboBookingId])
+  @@map("payments")
+}
+
+enum PaymentMethod {
+  CREDIT_CARD
+  DEBIT_CARD
+  BANK_TRANSFER
+  E_WALLET
+  CASH
+  PAYPAL
+  MOMO
+  ZALOPAY
+  VNPAY
+}
+
+enum PaymentStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  REFUNDED
+  CANCELLED
+}
+
+// ============================================
+// ĐÁNH GIÁ & KHUYẾN MÃI
+// ============================================
+
+model Review {
+  id          String     @id @default(uuid())
+  rating      Int
+  comment     String?    @db.Text
+  reviewType  ReviewType
+  entityId    String
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  customerId  String
+  customer    Customer   @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([entityId, reviewType])
+  @@index([customerId])
+  @@map("reviews")
+}
+
+enum ReviewType {
+  HOTEL
+  FLIGHT
+  COMBO
+}
+
+model Discount {
+  id              String        @id @default(uuid())
+  code            String        @unique
+  description     String?       @db.Text
+  discountType    DiscountType
+  discountValue   Decimal       @db.Decimal(10, 2)
+  minPurchase     Decimal?      @db.Decimal(10, 2)
+  maxDiscount     Decimal?      @db.Decimal(10, 2)
+  startDate       DateTime
+  endDate         DateTime
+  usageLimit      Int?
+  usageCount      Int           @default(0)
+  isActive        Boolean       @default(true)
+  applicableTo    String?       @db.Text
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@index([code, isActive])
+  @@index([code])
+  @@index([startDate, endDate])
+  @@map("discounts")
+}
+
+enum DiscountType {
+  PERCENTAGE
+  FIXED_AMOUNT
+  BUY_ONE_GET_ONE
+}
+
+// ============================================
+// BLOG & NỘI DUNG
+// ============================================
+
+model BlogPost {
+  id          String    @id @default(uuid())
+  title       String
+  slug        String    @unique
+  content     String    @db.Text
+  excerpt     String?   @db.Text
+  coverImage  String?
+  category    String?
+  tags        String?   @db.Text
+  isPublished Boolean   @default(false)
+  publishedAt DateTime?
+  viewCount   Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([slug])
+  @@index([isPublished, publishedAt])
+  @@map("blog_posts")
+}
+
+// ============================================
+// AUDIT LOG
+// ============================================
+
+model AuditLog {
+  id          String    @id @default(uuid())
+  action      String
+  entityType  String
+  entityId    String
+  oldValue    String?   @db.Text
+  newValue    String?   @db.Text
+  ipAddress   String?
+  userAgent   String?   @db.Text
+  createdAt   DateTime  @default(now())
+
+  employeeId  String?
+  employee    Employee? @relation(fields: [employeeId], references: [id], onDelete: SetNull)
+
+  @@index([entityType, entityId])
+  @@index([createdAt])
+  @@index([employeeId])
+  @@map("audit_logs")
+}
+
+// ============================================
+// QUẢN LÝ GIÁ CHUYẾN BAY HẰNG NGÀY
+// ============================================
+
+model FlightDailyPrice {
+  id              String        @id @default(uuid())
+  date            DateTime      @db.Date
+  price           Decimal       @db.Decimal(10, 2)
+  availableSeats  Int
+  priceCategory   PriceCategory @default(STANDARD)
+  demandLevel     DemandLevel   @default(NORMAL)
+  notes           String?       @db.Text
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  flightId        String
+  flight          Flight        @relation(fields: [flightId], references: [id], onDelete: Cascade)
+
+  @@unique([flightId, date])
+  @@index([date, priceCategory])
+  @@index([flightId, date])
+  @@index([flightId])
+  @@map("flight_daily_prices")
+}
+
+enum PriceCategory {
+  LOWEST
+  LOW
+  STANDARD
+  HIGH
+  PEAK
+}
+
+enum DemandLevel {
+  LOW
+  NORMAL
+  HIGH
+  VERY_HIGH
+}
+
+// ============================================
+// QUẢN LÝ MẪU GIÁ CHUYẾN BAY THEO TUYẾN
+// ============================================
+
+model FlightRoute {
+  id                  String   @id @default(uuid())
+  departureAirportCode String
+  arrivalAirportCode   String
+  averagePrice        Decimal  @db.Decimal(10, 2)
+  lowestPrice         Decimal  @db.Decimal(10, 2)
+  highestPrice        Decimal  @db.Decimal(10, 2)
+  popularDays         String?  @db.Text
+  averageDuration     Int
+  isPopular           Boolean  @default(false)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@unique([departureAirportCode, arrivalAirportCode])
+  @@index([isPopular])
+  @@index([departureAirportCode, arrivalAirportCode])
+  @@map("flight_routes")
+}
+
+// ============================================
+// QUẢN LÝ GIÁ CHUYẾN BAY THEO MùA
+// ============================================
+
+model FlightSeasonalRate {
+  id              String   @id @default(uuid())
+  name            String
+  startDate       DateTime @db.Date
+  endDate         DateTime @db.Date
+  priceMultiplier Decimal  @db.Decimal(5, 2)
+  description     String?  @db.Text
+  routePattern    String?
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([startDate, endDate, isActive])
+  @@index([startDate, endDate])
+  @@map("flight_seasonal_rates")
+}

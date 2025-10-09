@@ -1,33 +1,33 @@
-"use client";
-import { useState } from "react";
+getSession;
+
 import {
   Plane,
   Hotel,
   Calendar,
   Users,
   CreditCard,
-  Settings,
   Menu,
   Heart,
-  Clock,
   MapPin,
   Bell,
   User,
   Search,
-  Newspaper,
 } from "lucide-react";
 
-export default function TrangChu() {
-  const [activeMenu, setActiveMenu] = useState("home");
-  const [showDropdown, setShowDropdown] = useState(false);
+import { getSession } from "@/app/lib/session";
+import { UserDropdown } from "@/app/component/user-dropdown";
+import { NavbarClient } from "@/app/component/navbar-client";
+
+export default async function TrangChu() {
+  const session = await getSession();
 
   const mainMenuItems = [
     { id: "home", label: "Trang Chủ" },
-    { id: "flights", label: "Vé Máy Bay", icon: Plane },
-    { id: "hotels", label: "Khách Sạn", icon: Hotel },
+    { id: "flights", label: "Vé Máy Bay", icon: "Plane" },
+    { id: "hotels", label: "Khách Sạn", icon: "Hotel" },
     { id: "combo", label: "Combo Tiết Kiệm" },
-    { id: "destinations", label: "Điểm Đến", icon: MapPin },
-    { id: "New", label: "Tin Tức", icon: Newspaper },
+    { id: "destinations", label: "Điểm Đến", icon: "MapPin" },
+    { id: "New", label: "Tin Tức", icon: "Newspaper" },
   ];
 
   return (
@@ -51,27 +51,8 @@ export default function TrangChu() {
               </div>
             </div>
 
-            {/* Main Menu */}
-            <div className="hidden md:flex items-center gap-1">
-              {mainMenuItems.map((item) => {
-                const Icon = item.icon;
-                const isActive = activeMenu === item.id;
-                return (
-                  <button
-                    key={item.id}
-                    onClick={() => setActiveMenu(item.id)}
-                    className={`flex items-center gap-2 px-3 py-2.5 rounded-full font-medium transition-all duration-300 ${
-                      isActive
-                        ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg scale-105"
-                        : "text-gray-700 hover:bg-gray-100"
-                    }`}
-                  >
-                    {Icon && <Icon className="w-4 h-4" />}
-                    <span>{item.label}</span>
-                  </button>
-                );
-              })}
-            </div>
+            {/* Main Menu - needs client component for state */}
+            <NavbarClient mainMenuItems={mainMenuItems} />
 
             {/* Right Menu */}
             <div className="flex items-center gap-3">
@@ -84,41 +65,23 @@ export default function TrangChu() {
                 <Heart className="w-5 h-5 text-gray-700" />
               </button>
 
-              <div className="relative">
-                <button
-                  onClick={() => setShowDropdown(!showDropdown)}
+              {session ? (
+                <UserDropdown
+                  user={{
+                    firstName: session.firstName,
+                    lastName: session.lastName,
+                    email: session.email,
+                  }}
+                />
+              ) : (
+                <a
+                  href="/login"
                   className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-full hover:shadow-lg transition-all duration-300"
                 >
                   <User className="w-4 h-4" />
-                  <span className="font-medium">Tài Khoản</span>
-                </button>
-
-                {showDropdown && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl py-2 border border-gray-100">
-                    <a
-                      href="#"
-                      className="flex items-center gap-2 px-4 py-2 hover:bg-gray-50 text-gray-700"
-                    >
-                      <User className="w-4 h-4" />
-                      <span>Hồ sơ</span>
-                    </a>
-                    <a
-                      href="#"
-                      className="flex items-center gap-2 px-4 py-2 hover:bg-gray-50 text-gray-700"
-                    >
-                      <Clock className="w-4 h-4" />
-                      <span>Đặt chỗ của tôi</span>
-                    </a>
-                    <a
-                      href="#"
-                      className="flex items-center gap-2 px-4 py-2 hover:bg-gray-50 text-gray-700"
-                    >
-                      <Settings className="w-4 h-4" />
-                      <span>Cài đặt</span>
-                    </a>
-                  </div>
-                )}
-              </div>
+                  <span className="font-medium">Đăng nhập</span>
+                </a>
+              )}
 
               <button className="md:hidden p-2.5 hover:bg-gray-100 rounded-full">
                 <Menu className="w-5 h-5 text-gray-700" />

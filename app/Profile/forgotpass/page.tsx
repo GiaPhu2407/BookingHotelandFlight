@@ -116,7 +116,7 @@ const ForgotPasswordPage = () => {
         "Đặt lại mật khẩu thành công! Đang chuyển đến trang đăng nhập..."
       );
       setTimeout(() => {
-        router.push("/Register");
+        router.push("/Registers");
       }, 2000);
     } catch (err) {
       console.error("Reset password error:", err);

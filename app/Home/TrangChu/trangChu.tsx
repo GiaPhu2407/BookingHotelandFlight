@@ -45,7 +45,7 @@ export default async function TrangChu() {
               </div>
               <div>
                 <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  SkyBooking
+                  FlyStay
                 </h1>
                 <p className="text-xs text-gray-500">Travel with confidence</p>
               </div>

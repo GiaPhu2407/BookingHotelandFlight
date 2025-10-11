@@ -41,7 +41,7 @@ export default async function ProfilePage() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
       <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-blue-600">TravelEase</h1>
+          <h1 className="text-2xl font-bold text-blue-600">FlyStay</h1>
           <UserDropdown
             user={{
               firstName: customer.firstName,

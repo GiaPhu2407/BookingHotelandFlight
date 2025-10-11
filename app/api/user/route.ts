@@ -184,7 +184,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           error: "Dữ liệu không hợp lệ",
-        //   details: error.errors,
+          //   details: error.errors,
         },
         { status: 400 }
       );

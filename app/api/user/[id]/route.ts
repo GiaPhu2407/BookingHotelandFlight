@@ -22,10 +22,10 @@ const CustomerUpdateSchema = z.object({
 // GET customer by ID
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const id = params.id;
+    const { id } = await params;
 
     const customer = await prisma.customer.findUnique({
       where: { id },
@@ -71,12 +71,15 @@ export async function GET(
 // PUT (update) customer by ID
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const id = params.id;
-
+    const { id } = await params;
     const body = await request.json();
+
+    console.log("Update request for customer ID:", id);
+    console.log("Update data:", body);
+
     const validatedData = CustomerUpdateSchema.parse(body);
 
     // Check if customer exists
@@ -169,7 +172,7 @@ export async function PUT(
       return NextResponse.json(
         {
           error: "Dữ liệu không hợp lệ",
-        //   details: error.errors,
+          details: error.issues,
         },
         { status: 400 }
       );
@@ -185,10 +188,10 @@ export async function PUT(
 // DELETE customer by ID
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const id = params.id;
+    const { id } = await params;
 
     // Check if customer exists
     const existingCustomer = await prisma.customer.findUnique({
@@ -209,7 +212,7 @@ export async function DELETE(
 
     return NextResponse.json({
       success: true,
-      message: `Xóa khách hàng thành công`,
+      message: "Xóa khách hàng thành công",
     });
   } catch (error) {
     console.error("DELETE customer error:", error);

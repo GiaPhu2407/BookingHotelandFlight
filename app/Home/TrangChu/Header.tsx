@@ -57,7 +57,7 @@ const Header = () => {
           href="/"
           className="text-white font-semibold text-lg hover:text-yellow-400 transition-colors"
         >
-          SkyBooking
+          FlyStay
         </Link>
       </div>
 

@@ -30,7 +30,9 @@ model Customer {
   isVerified      Boolean   @default(false)
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
-
+resetToken       String?
+  resetCode        String?
+  resetTokenExpiry DateTime?
   hotelBookings   HotelBooking[]
   flightBookings  FlightBooking[]
   comboBookings   ComboBooking[]

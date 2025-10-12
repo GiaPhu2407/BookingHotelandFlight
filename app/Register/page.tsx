@@ -12,6 +12,7 @@ import {
   User,
   Phone,
   Check,
+  Sparkles,
 } from "lucide-react";
 
 const RegisterPage = () => {
@@ -22,7 +23,6 @@ const RegisterPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // ✅ FIXED: Changed from 'email' to 'identifier'
   const [loginData, setLoginData] = useState({
     identifier: "",
     password: "",
@@ -43,7 +43,6 @@ const RegisterPage = () => {
     setError("");
 
     try {
-      // ✅ FIXED: Send 'identifier' instead of 'email'
       const requestBody = {
         identifier: loginData.identifier,
         password: loginData.password,
@@ -70,7 +69,6 @@ const RegisterPage = () => {
         return;
       }
 
-      // Redirect to home page on success
       router.push("/");
       router.refresh();
     } catch (err) {
@@ -128,11 +126,11 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-[#fef5f0] via-[#fff9f5] to-[#fef0e8] flex items-center justify-center p-4 relative overflow-hidden">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
-        <div className="absolute top-40 right-10 w-72 h-72 bg-indigo-200 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000"></div>
-        <div className="absolute -bottom-8 left-1/2 w-72 h-72 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-4000"></div>
+        <div className="absolute top-20 left-10 w-96 h-96 bg-[#d4a574]/10 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob"></div>
+        <div className="absolute top-40 right-10 w-96 h-96 bg-[#2d7a65]/10 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob animation-delay-2000"></div>
+        <div className="absolute -bottom-8 left-1/2 w-96 h-96 bg-[#1e5a4a]/10 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob animation-delay-4000"></div>
       </div>
 
       <style jsx>{`
@@ -160,13 +158,12 @@ const RegisterPage = () => {
       `}</style>
 
       <div className="relative w-full max-w-6xl mx-auto">
-        <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
+        <div className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-[#e8d5c8]">
           <div className="grid md:grid-cols-2">
-            {/* Left Panel */}
-            <div className="bg-gradient-to-br from-blue-600 to-indigo-700 p-12 text-white flex flex-col justify-between relative overflow-hidden">
-              <div className="absolute inset-0 opacity-10">
+            <div className="bg-gradient-to-br from-[#1e5a4a] to-[#2d7a65] p-12 text-white flex flex-col justify-between relative overflow-hidden">
+              <div className="absolute inset-0 opacity-5">
                 <div className="absolute top-10 left-10">
-                  <Plane className="w-32 h-32 transform -rotate-45" />
+                  <Sparkles className="w-32 h-32" />
                 </div>
                 <div className="absolute bottom-10 right-10">
                   <Hotel className="w-40 h-40" />
@@ -175,57 +172,57 @@ const RegisterPage = () => {
 
               <div className="relative z-10">
                 <div className="flex items-center gap-3 mb-8">
-                  <div className="bg-white/20 backdrop-blur-sm p-3 rounded-xl">
+                  <div className="bg-white/20 backdrop-blur-sm p-3 rounded-2xl">
                     <Plane className="w-8 h-8" />
                   </div>
-                  <h1 className="text-3xl font-bold">TravelEase</h1>
+                  <h1 className="text-3xl font-bold tracking-tight">FlyStay</h1>
                 </div>
 
                 <div className="space-y-6">
-                  <h2 className="text-4xl font-bold leading-tight">
+                  <h2 className="text-4xl font-bold leading-tight text-balance">
                     {currentPage === "login"
                       ? "Chào mừng trở lại!"
-                      : "Bắt đầu hành trình của bạn"}
+                      : "Bắt đầu hành trình"}
                   </h2>
-                  <p className="text-blue-100 text-lg">
+                  <p className="text-white/90 text-lg leading-relaxed">
                     {currentPage === "login"
-                      ? "Đăng nhập để tiếp tục đặt vé máy bay và khách sạn với giá tốt nhất"
-                      : "Tạo tài khoản để trải nghiệm dịch vụ đặt vé và khách sạn tiện lợi"}
+                      ? "Đăng nhập để khám phá những chuyến bay và khách sạn tuyệt vời nhất"
+                      : "Tạo tài khoản để trải nghiệm dịch vụ du lịch đẳng cấp"}
                   </p>
                 </div>
               </div>
 
               <div className="relative z-10 space-y-4">
                 <div className="flex items-start gap-3">
-                  <div className="bg-white/20 backdrop-blur-sm p-2 rounded-lg mt-1">
+                  <div className="bg-white/20 backdrop-blur-sm p-2 rounded-xl mt-1">
                     <Check className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="font-semibold mb-1">Giá vé tốt nhất</h3>
-                    <p className="text-blue-100 text-sm">
-                      So sánh giá từ hàng trăm hãng hàng không
+                    <h3 className="font-semibold mb-1">Giá tốt nhất</h3>
+                    <p className="text-white/80 text-sm leading-relaxed">
+                      So sánh và đặt vé với giá ưu đãi nhất
                     </p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <div className="bg-white/20 backdrop-blur-sm p-2 rounded-lg mt-1">
+                  <div className="bg-white/20 backdrop-blur-sm p-2 rounded-xl mt-1">
                     <Check className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="font-semibold mb-1">Đặt chỗ nhanh chóng</h3>
-                    <p className="text-blue-100 text-sm">
-                      Xác nhận ngay lập tức, thanh toán linh hoạt
+                    <h3 className="font-semibold mb-1">Đặt chỗ dễ dàng</h3>
+                    <p className="text-white/80 text-sm leading-relaxed">
+                      Xác nhận ngay, thanh toán linh hoạt
                     </p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <div className="bg-white/20 backdrop-blur-sm p-2 rounded-lg mt-1">
+                  <div className="bg-white/20 backdrop-blur-sm p-2 rounded-xl mt-1">
                     <Check className="w-5 h-5" />
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1">Hỗ trợ 24/7</h3>
-                    <p className="text-blue-100 text-sm">
-                      Đội ngũ chăm sóc khách hàng luôn sẵn sàng
+                    <p className="text-white/80 text-sm leading-relaxed">
+                      Đội ngũ chăm sóc luôn sẵn sàng hỗ trợ
                     </p>
                   </div>
                 </div>
@@ -233,17 +230,17 @@ const RegisterPage = () => {
             </div>
 
             {/* Right Panel */}
-            <div className="p-12">
-              <div className="flex gap-2 mb-8 bg-gray-100 p-1.5 rounded-xl">
+            <div className="p-12 bg-white">
+              <div className="flex gap-2 mb-8 bg-[#fef5f0] p-1.5 rounded-2xl border border-[#e8d5c8]">
                 <button
                   onClick={() => {
                     setCurrentPage("login");
                     setError("");
                   }}
-                  className={`flex-1 py-3 px-4 rounded-lg font-semibold transition-all ${
+                  className={`flex-1 py-3 px-4 rounded-xl font-semibold transition-all ${
                     currentPage === "login"
-                      ? "bg-white text-blue-600 shadow-md"
-                      : "text-gray-600 hover:text-gray-900"
+                      ? "bg-white text-[#1e5a4a] shadow-md border border-[#e8d5c8]"
+                      : "text-[#6b6b6b] hover:text-[#2c2c2c]"
                   }`}
                 >
                   Đăng nhập
@@ -253,10 +250,10 @@ const RegisterPage = () => {
                     setCurrentPage("register");
                     setError("");
                   }}
-                  className={`flex-1 py-3 px-4 rounded-lg font-semibold transition-all ${
+                  className={`flex-1 py-3 px-4 rounded-xl font-semibold transition-all ${
                     currentPage === "register"
-                      ? "bg-white text-blue-600 shadow-md"
-                      : "text-gray-600 hover:text-gray-900"
+                      ? "bg-white text-[#1e5a4a] shadow-md border border-[#e8d5c8]"
+                      : "text-[#6b6b6b] hover:text-[#2c2c2c]"
                   }`}
                 >
                   Đăng ký
@@ -264,7 +261,7 @@ const RegisterPage = () => {
               </div>
 
               {error && (
-                <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
+                <div className="mb-4 p-4 bg-red-50 border border-red-200 text-red-700 rounded-2xl text-sm leading-relaxed">
                   {error}
                 </div>
               )}
@@ -273,11 +270,11 @@ const RegisterPage = () => {
               {currentPage === "login" && (
                 <form onSubmit={handleLogin} className="space-y-5">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-semibold text-[#2c2c2c] mb-2">
                       Email hoặc Số điện thoại
                     </label>
                     <div className="relative">
-                      <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                      <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 text-[#8a8a8a] w-5 h-5" />
                       <input
                         type="text"
                         placeholder="ten@email.com hoặc 0912345678"
@@ -289,17 +286,17 @@ const RegisterPage = () => {
                             identifier: e.target.value,
                           })
                         }
-                        className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all outline-none"
+                        className="w-full pl-12 pr-4 py-3.5 border-2 border-[#e8d5c8] rounded-2xl focus:border-[#2d7a65] focus:ring-4 focus:ring-[#2d7a65]/10 transition-all outline-none bg-white text-[#2c2c2c] placeholder:text-[#8a8a8a]"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-semibold text-[#2c2c2c] mb-2">
                       Mật khẩu
                     </label>
                     <div className="relative">
-                      <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                      <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 text-[#8a8a8a] w-5 h-5" />
                       <input
                         type={showPassword ? "text" : "password"}
                         placeholder="Nhập mật khẩu"
@@ -311,12 +308,12 @@ const RegisterPage = () => {
                             password: e.target.value,
                           })
                         }
-                        className="w-full pl-12 pr-12 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all outline-none"
+                        className="w-full pl-12 pr-12 py-3.5 border-2 border-[#e8d5c8] rounded-2xl focus:border-[#2d7a65] focus:ring-4 focus:ring-[#2d7a65]/10 transition-all outline-none bg-white text-[#2c2c2c] placeholder:text-[#8a8a8a]"
                       />
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                        className="absolute right-4 top-1/2 transform -translate-y-1/2 text-[#8a8a8a] hover:text-[#2c2c2c] transition-colors"
                       >
                         {showPassword ? (
                           <EyeOff className="w-5 h-5" />
@@ -328,18 +325,18 @@ const RegisterPage = () => {
                   </div>
 
                   <div className="flex items-center justify-between">
-                    <label className="flex items-center gap-2 cursor-pointer">
+                    <label className="flex items-center gap-2 cursor-pointer group">
                       <input
                         type="checkbox"
-                        className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        className="w-4 h-4 rounded border-[#e8d5c8] text-[#1e5a4a] focus:ring-[#2d7a65]"
                       />
-                      <span className="text-sm text-gray-600">
+                      <span className="text-sm text-[#6b6b6b] group-hover:text-[#2c2c2c]">
                         Ghi nhớ đăng nhập
                       </span>
                     </label>
                     <a
-                      href="#"
-                      className="text-sm text-blue-600 hover:text-blue-700 font-medium"
+                      href="/Profile/forgotpass"
+                      className="text-sm text-[#1e5a4a] hover:text-[#164438] font-semibold transition-colors"
                     >
                       Quên mật khẩu?
                     </a>
@@ -348,17 +345,17 @@ const RegisterPage = () => {
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3.5 rounded-xl font-semibold hover:from-blue-700 hover:to-indigo-700 transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full bg-gradient-to-r from-[#1e5a4a] to-[#2d7a65] text-white py-4 rounded-2xl font-semibold hover:from-[#164438] hover:to-[#236352] transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {isLoading ? "Đang xử lý..." : "Đăng nhập"}
                   </button>
 
                   <div className="relative my-6">
                     <div className="absolute inset-0 flex items-center">
-                      <div className="w-full border-t border-gray-200"></div>
+                      <div className="w-full border-t border-[#e8d5c8]"></div>
                     </div>
                     <div className="relative flex justify-center text-sm">
-                      <span className="px-4 bg-white text-gray-500">
+                      <span className="px-4 bg-white text-[#8a8a8a]">
                         Hoặc đăng nhập với
                       </span>
                     </div>
@@ -367,7 +364,7 @@ const RegisterPage = () => {
                   <div className="grid grid-cols-2 gap-3">
                     <button
                       type="button"
-                      className="flex items-center justify-center gap-2 py-3 border-2 border-gray-200 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all"
+                      className="flex items-center justify-center gap-2 py-3 border-2 border-[#e8d5c8] rounded-2xl hover:bg-[#fef5f0] hover:border-[#d4a574] transition-all"
                     >
                       <svg className="w-5 h-5" viewBox="0 0 24 24">
                         <path
@@ -387,11 +384,11 @@ const RegisterPage = () => {
                           fill="#EA4335"
                         />
                       </svg>
-                      <span className="font-medium text-gray-700">Google</span>
+                      <span className="font-medium text-[#2c2c2c]">Google</span>
                     </button>
                     <button
                       type="button"
-                      className="flex items-center justify-center gap-2 py-3 border-2 border-gray-200 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all"
+                      className="flex items-center justify-center gap-2 py-3 border-2 border-[#e8d5c8] rounded-2xl hover:bg-[#fef5f0] hover:border-[#d4a574] transition-all"
                     >
                       <svg
                         className="w-5 h-5"
@@ -400,7 +397,7 @@ const RegisterPage = () => {
                       >
                         <path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.167 22 16.418 22 12c0-5.523-4.477-10-10-10z" />
                       </svg>
-                      <span className="font-medium text-gray-700">GitHub</span>
+                      <span className="font-medium text-[#2c2c2c]">GitHub</span>
                     </button>
                   </div>
                 </form>
@@ -411,11 +408,11 @@ const RegisterPage = () => {
                 <form onSubmit={handleRegister} className="space-y-4">
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-semibold text-[#2c2c2c] mb-2">
                         Họ
                       </label>
                       <div className="relative">
-                        <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                        <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#8a8a8a] w-4 h-4" />
                         <input
                           type="text"
                           placeholder="Nguyễn"
@@ -427,16 +424,16 @@ const RegisterPage = () => {
                               firstName: e.target.value,
                             })
                           }
-                          className="w-full pl-10 pr-3 py-2.5 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all outline-none text-sm"
+                          className="w-full pl-10 pr-3 py-2.5 border-2 border-[#e8d5c8] rounded-xl focus:border-[#2d7a65] focus:ring-4 focus:ring-[#2d7a65]/10 transition-all outline-none text-sm bg-white text-[#2c2c2c] placeholder:text-[#8a8a8a]"
                         />
                       </div>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-semibold text-[#2c2c2c] mb-2">
                         Tên
                       </label>
                       <div className="relative">
-                        <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                        <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#8a8a8a] w-4 h-4" />
                         <input
                           type="text"
                           placeholder="Văn A"
@@ -448,18 +445,18 @@ const RegisterPage = () => {
                               lastName: e.target.value,
                             })
                           }
-                          className="w-full pl-10 pr-3 py-2.5 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all outline-none text-sm"
+                          className="w-full pl-10 pr-3 py-2.5 border-2 border-[#e8d5c8] rounded-xl focus:border-[#2d7a65] focus:ring-4 focus:ring-[#2d7a65]/10 transition-all outline-none text-sm bg-white text-[#2c2c2c] placeholder:text-[#8a8a8a]"
                         />
                       </div>
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-semibold text-[#2c2c2c] mb-2">
                       Email
                     </label>
                     <div className="relative">
-                      <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                      <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#8a8a8a] w-4 h-4" />
                       <input
                         type="email"
                         placeholder="ten@email.com"
@@ -471,17 +468,17 @@ const RegisterPage = () => {
                             email: e.target.value,
                           })
                         }
-                        className="w-full pl-10 pr-3 py-2.5 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all outline-none text-sm"
+                        className="w-full pl-10 pr-3 py-2.5 border-2 border-[#e8d5c8] rounded-xl focus:border-[#2d7a65] focus:ring-4 focus:ring-[#2d7a65]/10 transition-all outline-none text-sm bg-white text-[#2c2c2c] placeholder:text-[#8a8a8a]"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-semibold text-[#2c2c2c] mb-2">
                       Số điện thoại
                     </label>
                     <div className="relative">
-                      <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                      <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#8a8a8a] w-4 h-4" />
                       <input
                         type="tel"
                         placeholder="0912345678"
@@ -492,17 +489,17 @@ const RegisterPage = () => {
                             phoneNumber: e.target.value,
                           })
                         }
-                        className="w-full pl-10 pr-3 py-2.5 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all outline-none text-sm"
+                        className="w-full pl-10 pr-3 py-2.5 border-2 border-[#e8d5c8] rounded-xl focus:border-[#2d7a65] focus:ring-4 focus:ring-[#2d7a65]/10 transition-all outline-none text-sm bg-white text-[#2c2c2c] placeholder:text-[#8a8a8a]"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-semibold text-[#2c2c2c] mb-2">
                       Mật khẩu
                     </label>
                     <div className="relative">
-                      <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                      <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#8a8a8a] w-4 h-4" />
                       <input
                         type={showPassword ? "text" : "password"}
                         placeholder="Tối thiểu 8 ký tự"
@@ -515,12 +512,12 @@ const RegisterPage = () => {
                             password: e.target.value,
                           })
                         }
-                        className="w-full pl-10 pr-10 py-2.5 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all outline-none text-sm"
+                        className="w-full pl-10 pr-10 py-2.5 border-2 border-[#e8d5c8] rounded-xl focus:border-[#2d7a65] focus:ring-4 focus:ring-[#2d7a65]/10 transition-all outline-none text-sm bg-white text-[#2c2c2c] placeholder:text-[#8a8a8a]"
                       />
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#8a8a8a] hover:text-[#2c2c2c] transition-colors"
                       >
                         {showPassword ? (
                           <EyeOff className="w-4 h-4" />
@@ -532,11 +529,11 @@ const RegisterPage = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-semibold text-[#2c2c2c] mb-2">
                       Xác nhận mật khẩu
                     </label>
                     <div className="relative">
-                      <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                      <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#8a8a8a] w-4 h-4" />
                       <input
                         type={showConfirmPassword ? "text" : "password"}
                         placeholder="Nhập lại mật khẩu"
@@ -548,14 +545,14 @@ const RegisterPage = () => {
                             confirmPassword: e.target.value,
                           })
                         }
-                        className="w-full pl-10 pr-10 py-2.5 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all outline-none text-sm"
+                        className="w-full pl-10 pr-10 py-2.5 border-2 border-[#e8d5c8] rounded-xl focus:border-[#2d7a65] focus:ring-4 focus:ring-[#2d7a65]/10 transition-all outline-none text-sm bg-white text-[#2c2c2c] placeholder:text-[#8a8a8a]"
                       />
                       <button
                         type="button"
                         onClick={() =>
                           setShowConfirmPassword(!showConfirmPassword)
                         }
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#8a8a8a] hover:text-[#2c2c2c] transition-colors"
                       >
                         {showConfirmPassword ? (
                           <EyeOff className="w-4 h-4" />
@@ -571,20 +568,20 @@ const RegisterPage = () => {
                       <input
                         type="checkbox"
                         required
-                        className="w-4 h-4 mt-0.5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        className="w-4 h-4 mt-0.5 rounded border-[#e8d5c8] text-[#1e5a4a] focus:ring-[#2d7a65]"
                       />
-                      <span className="text-sm text-gray-600 group-hover:text-gray-900">
+                      <span className="text-sm text-[#6b6b6b] group-hover:text-[#2c2c2c] leading-relaxed">
                         Tôi đồng ý với{" "}
                         <a
                           href="#"
-                          className="text-blue-600 hover:underline font-medium"
+                          className="text-[#1e5a4a] hover:underline font-semibold"
                         >
                           Điều khoản dịch vụ
                         </a>{" "}
                         và{" "}
                         <a
                           href="#"
-                          className="text-blue-600 hover:underline font-medium"
+                          className="text-[#1e5a4a] hover:underline font-semibold"
                         >
                           Chính sách bảo mật
                         </a>
@@ -593,9 +590,9 @@ const RegisterPage = () => {
                     <label className="flex items-start gap-3 cursor-pointer group">
                       <input
                         type="checkbox"
-                        className="w-4 h-4 mt-0.5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        className="w-4 h-4 mt-0.5 rounded border-[#e8d5c8] text-[#1e5a4a] focus:ring-[#2d7a65]"
                       />
-                      <span className="text-sm text-gray-600 group-hover:text-gray-900">
+                      <span className="text-sm text-[#6b6b6b] group-hover:text-[#2c2c2c] leading-relaxed">
                         Nhận thông tin khuyến mãi và ưu đãi đặc biệt
                       </span>
                     </label>
@@ -604,17 +601,17 @@ const RegisterPage = () => {
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 rounded-xl font-semibold hover:from-blue-700 hover:to-indigo-700 transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed mt-4"
+                    className="w-full bg-gradient-to-r from-[#1e5a4a] to-[#2d7a65] text-white py-3.5 rounded-2xl font-semibold hover:from-[#164438] hover:to-[#236352] transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed mt-4"
                   >
                     {isLoading ? "Đang tạo tài khoản..." : "Tạo tài khoản"}
                   </button>
 
                   <div className="relative my-4">
                     <div className="absolute inset-0 flex items-center">
-                      <div className="w-full border-t border-gray-200"></div>
+                      <div className="w-full border-t border-[#e8d5c8]"></div>
                     </div>
                     <div className="relative flex justify-center text-sm">
-                      <span className="px-4 bg-white text-gray-500">
+                      <span className="px-4 bg-white text-[#8a8a8a]">
                         Hoặc đăng ký với
                       </span>
                     </div>
@@ -623,7 +620,7 @@ const RegisterPage = () => {
                   <div className="grid grid-cols-2 gap-3">
                     <button
                       type="button"
-                      className="flex items-center justify-center gap-2 py-2.5 border-2 border-gray-200 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all"
+                      className="flex items-center justify-center gap-2 py-2.5 border-2 border-[#e8d5c8] rounded-2xl hover:bg-[#fef5f0] hover:border-[#d4a574] transition-all"
                     >
                       <svg className="w-4 h-4" viewBox="0 0 24 24">
                         <path
@@ -643,13 +640,13 @@ const RegisterPage = () => {
                           fill="#EA4335"
                         />
                       </svg>
-                      <span className="font-medium text-gray-700 text-sm">
+                      <span className="font-medium text-[#2c2c2c] text-sm">
                         Google
                       </span>
                     </button>
                     <button
                       type="button"
-                      className="flex items-center justify-center gap-2 py-2.5 border-2 border-gray-200 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all"
+                      className="flex items-center justify-center gap-2 py-2.5 border-2 border-[#e8d5c8] rounded-2xl hover:bg-[#fef5f0] hover:border-[#d4a574] transition-all"
                     >
                       <svg
                         className="w-4 h-4"
@@ -658,7 +655,7 @@ const RegisterPage = () => {
                       >
                         <path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.167 22 16.418 22 12c0-5.523-4.477-10-10-10z" />
                       </svg>
-                      <span className="font-medium text-gray-700 text-sm">
+                      <span className="font-medium text-[#2c2c2c] text-sm">
                         GitHub
                       </span>
                     </button>
@@ -669,9 +666,9 @@ const RegisterPage = () => {
           </div>
         </div>
 
-        <div className="mt-8 text-center text-sm text-gray-600">
-          <p>
-            🔒 Bảo mật với mã hóa SSL • 🌟 Được tin dùng bởi 50,000+ khách hàng
+        <div className="mt-8 text-center text-sm text-[#6b6b6b]">
+          <p className="leading-relaxed">
+            Bảo mật với mã hóa SSL • Được tin dùng bởi hàng ngàn khách hàng
           </p>
         </div>
       </div>

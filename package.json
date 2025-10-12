@@ -23,6 +23,7 @@
     "jose": "^6.1.0",
     "lucide-react": "^0.511.0",
     "next": "^15.3.2",
+    "nodemailer": "^7.0.9",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-hook-form": "^7.59.0",
@@ -34,8 +35,13 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
+<<<<<<< HEAD
     "@types/estree": "^1.0.8",
     "@types/node": "^20.19.21",
+=======
+    "@types/node": "^20.19.19",
+    "@types/nodemailer": "^7.0.2",
+>>>>>>> 0ecdc94c31fc453934eef158a37c34ff330b7644
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "autoprefixer": "^10.4.21",

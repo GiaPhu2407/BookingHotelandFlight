@@ -83,7 +83,7 @@ export default function TravelFooter() {
                 className="text-2xl font-bold bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-500 bg-clip-text text-transparent"
                 style={{ fontFamily: "'Poppins', sans-serif" }}
               >
-                TravelBooking
+                FlyStay
               </h3>
             </div>
             <p className="text-sm leading-relaxed mb-6 text-gray-400">

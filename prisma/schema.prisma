@@ -12,7 +12,18 @@ generator client {
 // ============================================
 // QUẢN LÝ NGƯỜI DÙNG & KHÁCH HÀNG
 // ============================================
+model VerificationCode {
+  id         String   @id @default(cuid())
+  customerId String
+  code       String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
 
+  customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([customerId])
+  @@index([code])
+}
 model Customer {
   id              String    @id @default(uuid())
   email           String    @unique
@@ -38,6 +49,7 @@ resetToken       String?
   comboBookings   ComboBooking[]
   reviews         Review[]
   payments        Payment[]
+  verificationCodes VerificationCode[]
 
   @@index([email])
   @@map("customers")

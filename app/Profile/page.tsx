@@ -1,10 +1,11 @@
+// app/profile/page.tsx (CẬP NHẬT)
 import { redirect } from "next/navigation";
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Mail, Phone, MapPin, Calendar, Award } from "lucide-react";
 import prisma from "@/prisma/client";
 import { getSession } from "../lib/session";
 import { UserDropdown } from "../component/user-dropdown";
+import { VerifyEmailButton } from "../component/verify-email-button";
 
 export default async function ProfilePage() {
   const session = await getSession();
@@ -193,7 +194,7 @@ export default async function ProfilePage() {
                   {customer.nationality && (
                     <div>
                       <label className="text-sm font-medium text-gray-500">
-                        Quốc t적
+                        Quốc tịch
                       </label>
                       <p className="text-base font-medium mt-1">
                         {customer.nationality}
@@ -244,15 +245,20 @@ export default async function ProfilePage() {
             <CardContent className="space-y-3">
               <div className="flex items-center justify-between">
                 <span className="text-gray-600">Xác thực email</span>
-                <span
-                  className={`px-3 py-1 rounded-full text-sm font-medium ${
-                    customer.isVerified
-                      ? "bg-green-100 text-green-700"
-                      : "bg-yellow-100 text-yellow-700"
-                  }`}
-                >
-                  {customer.isVerified ? "Đã xác thực" : "Chưa xác thực"}
-                </span>
+                <div className="flex items-center gap-2">
+                  <span
+                    className={`px-3 py-1 rounded-full text-sm font-medium ${
+                      customer.isVerified
+                        ? "bg-green-100 text-green-700"
+                        : "bg-yellow-100 text-yellow-700"
+                    }`}
+                  >
+                    {customer.isVerified ? "Đã xác thực" : "Chưa xác thực"}
+                  </span>
+                  {!customer.isVerified && (
+                    <VerifyEmailButton email={customer.email} />
+                  )}
+                </div>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-gray-600">Ngày tạo tài khoản</span>

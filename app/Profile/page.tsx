@@ -1,15 +1,11 @@
+// app/profile/page.tsx (CẬP NHẬT)
 import { redirect } from "next/navigation";
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { MapPin, Award } from "lucide-react";
+import { Mail, Phone, MapPin, Calendar, Award } from "lucide-react";
 import prisma from "@/prisma/client";
 import { getSession } from "../lib/session";
 import { UserDropdown } from "../component/user-dropdown";
-
-import { Toaster } from "sonner";
-import { ProfileEditForm } from "../component/profile-edit-form";
-
-export const dynamic = "force-dynamic";
+import { VerifyEmailButton } from "../component/verify-email-button";
 
 export default async function ProfilePage() {
   const session = await getSession();
@@ -46,7 +42,7 @@ export default async function ProfilePage() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
       <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-blue-600">TravelEase</h1>
+          <h1 className="text-2xl font-bold text-blue-600">FlyStay</h1>
           <UserDropdown
             user={{
               firstName: customer.firstName,
@@ -67,15 +63,79 @@ export default async function ProfilePage() {
 
         <div className="grid gap-6">
           {/* Personal Information Card */}
-          <ProfileEditForm
-            customer={{
-              id: customer.id,
-              email: customer.email,
-              firstName: customer.firstName,
-              lastName: customer.lastName,
-              phoneNumber: customer.phoneNumber,
-            }}
-          />
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+                  <span className="text-xl font-bold text-blue-600">
+                    {customer.firstName.charAt(0)}
+                    {customer.lastName.charAt(0)}
+                  </span>
+                </div>
+                Thông tin cá nhân
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm font-medium text-gray-500">
+                    Họ
+                  </label>
+                  <p className="text-base font-medium mt-1">
+                    {customer.firstName}
+                  </p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-500">
+                    Tên
+                  </label>
+                  <p className="text-base font-medium mt-1">
+                    {customer.lastName}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                <Mail className="h-5 w-5 text-gray-400" />
+                <div>
+                  <label className="text-sm font-medium text-gray-500">
+                    Email
+                  </label>
+                  <p className="text-base font-medium">{customer.email}</p>
+                </div>
+              </div>
+
+              {customer.phoneNumber && (
+                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                  <Phone className="h-5 w-5 text-gray-400" />
+                  <div>
+                    <label className="text-sm font-medium text-gray-500">
+                      Số điện thoại
+                    </label>
+                    <p className="text-base font-medium">
+                      {customer.phoneNumber}
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {customer.dateOfBirth && (
+                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                  <Calendar className="h-5 w-5 text-gray-400" />
+                  <div>
+                    <label className="text-sm font-medium text-gray-500">
+                      Ngày sinh
+                    </label>
+                    <p className="text-base font-medium">
+                      {new Date(customer.dateOfBirth).toLocaleDateString(
+                        "vi-VN"
+                      )}
+                    </p>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
 
           {/* Address Information Card */}
           {(customer.address || customer.city || customer.country) && (
@@ -185,15 +245,20 @@ export default async function ProfilePage() {
             <CardContent className="space-y-3">
               <div className="flex items-center justify-between">
                 <span className="text-gray-600">Xác thực email</span>
-                <span
-                  className={`px-3 py-1 rounded-full text-sm font-medium ${
-                    customer.isVerified
-                      ? "bg-green-100 text-green-700"
-                      : "bg-yellow-100 text-yellow-700"
-                  }`}
-                >
-                  {customer.isVerified ? "Đã xác thực" : "Chưa xác thực"}
-                </span>
+                <div className="flex items-center gap-2">
+                  <span
+                    className={`px-3 py-1 rounded-full text-sm font-medium ${
+                      customer.isVerified
+                        ? "bg-green-100 text-green-700"
+                        : "bg-yellow-100 text-yellow-700"
+                    }`}
+                  >
+                    {customer.isVerified ? "Đã xác thực" : "Chưa xác thực"}
+                  </span>
+                  {!customer.isVerified && (
+                    <VerifyEmailButton email={customer.email} />
+                  )}
+                </div>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-gray-600">Ngày tạo tài khoản</span>
@@ -205,7 +270,6 @@ export default async function ProfilePage() {
           </Card>
         </div>
       </main>
-      <Toaster richColors position="top-right" />
     </div>
   );
 }
